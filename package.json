@@ -54,10 +54,8 @@
             "vite": "6.3.5"
       },
       "scripts": {
-            "predeploy" : "npm run build",
             "dev": "vite",
             "build": "vite build",
             "start": "vite preview"
-      },
-      "homepage":"https://lisastriker.github.io/mission-matching/"
+      }
 }
