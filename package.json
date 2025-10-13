@@ -57,5 +57,6 @@
           "dev": "vite",
           "build": "vite build",
           "start": "vite preview"
-      }
+      },
+      "homepage": "https://lisastriker.github.io/mission-matching/"
   }
