@@ -4,6 +4,7 @@ import { Job, UserProfile } from '../types';
 import { JobCard } from './JobCard';
 import { Button } from './ui/button';
 import { FilterBar } from './FilterBar';
+import { skillOptions } from '../data/skills';
 
 interface DashboardPageProps {
   jobs: Job[];
@@ -17,21 +18,33 @@ interface DashboardPageProps {
 export function DashboardPage({ jobs, currentUser, onJobClick, onPostJob, onProfileClick, onLoginClick }: DashboardPageProps) {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedOrganizations, setSelectedOrganizations] = useState<string[]>([]);
+  const [selectedMissionTypes, setSelectedMissionTypes] = useState<string[]>([]);
+  const [selectedMissionTerms, setSelectedMissionTerms] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
-  // Get unique locations and organizations
+  // Get unique values
   const uniqueLocations = Array.from(new Set(jobs.map(job => job.country))).sort();
   const uniqueOrganizations = Array.from(new Set(jobs.map(job => job.organizationName))).sort();
+  const uniqueMissionTypes = Array.from(new Set(jobs.map(job => job.missionType))).sort();
+  const uniqueMissionTerms = Array.from(new Set(jobs.map(job => job.missionTerm))).sort();
+  const uniqueSkills = Array.from(new Set(jobs.flatMap(job => job.skills))).sort();
 
   // Filter jobs based on selections
   const filteredJobs = jobs.filter(job => {
     const locationMatch = selectedLocations.length === 0 || selectedLocations.includes(job.country);
     const orgMatch = selectedOrganizations.length === 0 || selectedOrganizations.includes(job.organizationName);
-    return locationMatch && orgMatch;
+    const typeMatch = selectedMissionTypes.length === 0 || selectedMissionTypes.includes(job.missionType);
+    const termMatch = selectedMissionTerms.length === 0 || selectedMissionTerms.includes(job.missionTerm);
+    const skillMatch = selectedSkills.length === 0 || selectedSkills.some(skill => job.skills.includes(skill));
+    return locationMatch && orgMatch && typeMatch && termMatch && skillMatch;
   });
 
   const handleClearFilters = () => {
     setSelectedLocations([]);
     setSelectedOrganizations([]);
+    setSelectedMissionTypes([]);
+    setSelectedMissionTerms([]);
+    setSelectedSkills([]);
   };
 
   return (
@@ -76,16 +89,27 @@ export function DashboardPage({ jobs, currentUser, onJobClick, onPostJob, onProf
         <FilterBar
           locations={uniqueLocations}
           organizations={uniqueOrganizations}
+          missionTypes={uniqueMissionTypes}
+          missionTerms={uniqueMissionTerms}
+          skills={skillOptions}
           selectedLocations={selectedLocations}
           selectedOrganizations={selectedOrganizations}
+          selectedMissionTypes={selectedMissionTypes}
+          selectedMissionTerms={selectedMissionTerms}
+          selectedSkills={selectedSkills}
           onLocationChange={setSelectedLocations}
           onOrganizationChange={setSelectedOrganizations}
+          onMissionTypeChange={setSelectedMissionTypes}
+          onMissionTermChange={setSelectedMissionTerms}
+          onSkillsChange={setSelectedSkills}
           onClearFilters={handleClearFilters}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredJobs.map((job) => (
-            <JobCard key={job.id} job={job} onClick={() => onJobClick(job)} />
+            <div key={job.id}>
+              <JobCard job={job} onClick={() => onJobClick(job)} />
+            </div>
           ))}
         </div>
 
