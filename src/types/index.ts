@@ -1,3 +1,21 @@
+{/*export type MissionType = 'Remote' | 'Hybrid' | 'Onsite';*/}
+export type MissionType = 
+  | 'Exposure Trips'
+  | 'Training Courses'
+  | 'Mission Internship (1-12 Months)'
+  | 'Mid Term Placements (1-2 years)'
+  | 'Theological Training'
+  | 'Deployment Training'
+  | 'Remote'
+  | 'Onsite';
+
+export type MissionTerm = 'Short Term' | 'Long Term';
+
+export interface SupportingMedia {
+  images: string[];
+  video?: string;
+}
+
 export interface Job {
   id: string;
   title: string;
@@ -6,10 +24,16 @@ export interface Job {
   maxPeople: number;
   status: 'open' | 'closed';
   image: string;
+  missionType: MissionType;
+  missionTerm: MissionTerm;
   date: string;
+  dateStart?: string;
+  dateEnd?: string;
   details: string;
   skills: string[];
   languages: string[];
+  peopleGroups?: string[];
+  supportingMedia?: SupportingMedia;
   organizationName: string;
   organizerId?: string;
   applications?: JobApplication[];
@@ -23,15 +47,16 @@ export interface Organization {
 
 export interface JobApplication {
   id: string;
-  jobId: string;
   applicantId: string;
   name: string;
   email: string;
-  age?: number;
+  age?: number | null;
   expertise: string[];
+  skills: string[];
   phoneNumber?: string;
   details: string;
-  timestamp: number;
+  timestamp: number | string; // can be either ISO string or timestamp number
+  jobId: string;
 }
 
 export interface Application {
@@ -42,6 +67,13 @@ export interface Application {
 
 export type ExpertiseArea = 'Family' | 'Religion' | 'Education' | 'Government' | 'Media' | 'Arts & Entertainment' | 'Business' | 'Healthcare';
 
+export interface Skill {
+  id: string;
+  name: string;
+  category?: string;
+  createdAt: number;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -50,6 +82,7 @@ export interface UserProfile {
   role: 'harvest worker' | 'harvest organizer';
   age?: number;
   expertise: ExpertiseArea[];
+  skills: string[];
   phoneNumber?: string;
   attendedMissions: string[]; // Job IDs
   postedMissions: string[]; // Job IDs
